@@ -1,7 +1,7 @@
 # Copyright 2025 Bytedance Ltd. and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
 
-
+import os
 import random
 import json
 
@@ -120,6 +120,13 @@ class PackedDataset(torch.utils.data.IterableDataset):
                         dataset_args['parquet_info'] = {}
                     with open(meta_info['parquet_info_path'], 'r') as f:
                         parquet_info = json.load(f)
+                    if "BAGEL_DATA_ROOT" in os.environ:
+                        BAGEL_DATA_ROOT = os.environ["BAGEL_DATA_ROOT"]
+                        parquet_info_updated = {}
+                        for k, v in parquet_info.items():
+                            k = os.path.join(BAGEL_DATA_ROOT, k)
+                            parquet_info_updated[k] = v
+                        parquet_info = parquet_info_updated
                     dataset_args['parquet_info'].update(parquet_info)
 
                 if 'json_dir' in meta_info.keys():

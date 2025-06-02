@@ -295,7 +295,12 @@ class InterleaveInferencer:
 
         input_list = []
         if image is not None:
-            input_list.append(image)
+            if isinstance(image, Image.Image):
+                input_list.append(image)
+            elif isinstance(image, List):
+                input_list.extend(image)
+            else:
+                raise ValueError(f"Unsupported image type: {type(image)}")
         if text is not None:
             input_list.append(text)
 
